@@ -68,6 +68,12 @@ final			WBXCONorg		org;
 
 	public _WBXCONfactory(final String domainname, final String wapiAUTHURL, final String wapiUSER, final String wapiPASS) throws WBXCONexception{
 		this.domainname	=	domainname;
+		
+		System.out.println("_WBXCONfactory : domainname : "+domainname);
+		System.out.println("_WBXCONfactory : wapiAUTHURL : "+wapiAUTHURL);
+		System.out.println("_WBXCONfactory : wapiUSER : "+wapiUSER);
+		System.out.println("_WBXCONfactory : wapiPASS : "+wapiPASS);
+		
 		this.org		=	new WBXCONorg(domainname, wapiAUTHURL, wapiUSER, wapiPASS);
 		Runtime.getRuntime().addShutdownHook(new Thread("_WBXCONfactory shutdownhook") {
 			@Override

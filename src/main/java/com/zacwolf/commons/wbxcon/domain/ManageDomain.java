@@ -70,6 +70,12 @@ final	Handler		defaultHandler		=	new ConsoleHandler();
 final	Formatter	defaultFormatter	=	new DomainLoggingFormatter();
 					defaultHandler.setFormatter(defaultFormatter);
 					this.LOGGER.addHandler(defaultHandler);
+					
+					System.out.println("ManageDomain: Domain: "+ this.DOMAIN);
+					System.out.println("ManageDomain: wapiAUTHURL: "+ wapiAUTHURL);
+					System.out.println("ManageDomain: wapiUSER: "+ wapiUSER);
+					System.out.println("ManageDomain: wapiPASS: "+ wapiPASS);
+					
 					this.org			=	new _WBXCONfactory(this.DOMAIN,wapiAUTHURL, wapiUSER, wapiPASS);
 					this.props			=	jobprops;
 		if (ldapURL!=null)

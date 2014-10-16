@@ -186,7 +186,7 @@ final	RequestConfig						config		=	RequestConfig.custom()
 		} catch (final Exception e){
 			System.err.println(WBXCONorg.class.getCanonicalName()+" UNABLE TO ESTABLISH HTTPSCLIENT FOR WAPI CALLS. All WAPI CALLS WILL FAIL!!!");
 			e.printStackTrace();
-			System.exit(2);
+			//System.exit(2);
 		}
 		Runtime.getRuntime().addShutdownHook(new Thread("WBXCONorg shutdownhook") {
 			@Override
@@ -204,20 +204,44 @@ final	RequestConfig						config		=	RequestConfig.custom()
 
 final	Document				dom;
 		try{
+			System.out.println("===============  1");
 final	DocumentBuilderFactory	factory		=	DocumentBuilderFactory.newInstance();
+System.out.println("===============  2");
 								factory.setValidating(false);
+								System.out.println("===============  3");
 								factory.setCoalescing(true);
+								System.out.println("===============  4");
 final	DocumentBuilder			db			=	factory.newDocumentBuilder();
+System.out.println("===============  5");
 final	List<NameValuePair>		params		=	new ArrayList<NameValuePair>();
+System.out.println("===============  6");
 								params.add(new BasicNameValuePair("cmd","get"));
+								System.out.println("===============  7");
 								params.add(new BasicNameValuePair("type","org"));
+								System.out.println("===============  8");
 								params.add(new BasicNameValuePair("select","org/orgID:/org/namespaceID:ext/WBX/PWSRule"));
+								System.out.println("===============  9");
 								params.add(new BasicNameValuePair("id", "current"));
+								System.out.println("===============  10");
+								System.out.println("===============  getDomainCredToken() :"+getDomainCredToken());
 								params.add(new BasicNameValuePair("cred",getDomainCredToken()));
+								System.out.println("===============  11");
+								System.out.println("===============  params"+params.toString());
+								System.out.println("===============Before wapiURL :"+this.wapiURL);
 final	HttpPost 				httpPost	=	new HttpPost(this.wapiURL);
+System.out.println("=============== after wapiURL :"+this.wapiURL);
+
 								httpPost.setEntity(new UrlEncodedFormEntity(params, org.apache.http.Consts.UTF_8));
+								System.out.println("===============  12");
 final	CloseableHttpResponse	httpRes		=	HTTPSCLIENT.execute(httpPost,new BasicHttpContext());
+System.out.println("===============  13");
+
+if(httpRes == null){
+	System.out.println("===============  httpRes is NULL");
+}
+
 			try{				dom			=	db.parse(httpRes.getEntity().getContent());
+			System.out.println("===============  14");
 			}finally{			httpRes.close();
 			}
 		} catch (final Exception e){
@@ -304,17 +328,30 @@ final	DocumentBuilderFactory	factory 	=	DocumentBuilderFactory.newInstance();
 								factory.setValidating(false);
 								factory.setCoalescing(true);
 final	DocumentBuilder			db			=	factory.newDocumentBuilder();
+
+System.out.println("this.wapiAUTHURL : "+this.wapiAUTHURL);
+System.out.println("restapiDomainGetCredToken: 1 ");
+
 		HttpPost 				httpPost	=	new HttpPost(this.wapiAUTHURL);
+		System.out.println("restapiDomainGetCredToken: 2 ");
 								httpPost.setEntity(new UrlEncodedFormEntity(params, org.apache.http.Consts.UTF_8));
+								System.out.println("restapiDomainGetCredToken: 3 ");
 		CloseableHttpResponse	httpRes		=	HTTPSCLIENT.execute(httpPost,new BasicHttpContext());
+		System.out.println("restapiDomainGetCredToken: 4 ");
 			try{				dom			=	db.parse(httpRes.getEntity().getContent());
+			System.out.println("restapiDomainGetCredToken: 5 ");
 			}finally{			httpRes.close();
+			System.out.println("restapiDomainGetCredToken: 6 ");
 			}
 		NodeList				result		=	dom.getElementsByTagName("result");
+		System.out.println("restapiDomainGetCredToken: 7 ");
 			if (result==null || result.item(0)==null || !result.item(0).getTextContent().equalsIgnoreCase("success"))
 				throw new WBXCONexception("restapiDomainGetCredToken("+retry+"): [RESULT]:"+result.item(0).getTextContent()+" [ERROR}:"+documentGetErrorString(dom));
+			System.out.println("restapiDomainGetCredToken: 8 ");
 								this.wapiURL		=	"https://"+dom.getElementsByTagName("serviceurl").item(0).getTextContent()+"/op.do";
+								System.out.println("=======restapiDomainGetCredToken======= wapiURL :"+this.wapiURL);
 								this.wapiREPORTURL	=	"https://"+dom.getElementsByTagName("serviceurl").item(0).getTextContent()+"/getfile.do";
+								System.out.println("=======restapiDomainGetCredToken======= wapiREPORTURL :"+this.wapiREPORTURL);
 								params.clear();
 								params.add(new BasicNameValuePair("cmd","login"));
 								params.add(new BasicNameValuePair("username",this.wapiUSER));
@@ -322,16 +359,22 @@ final	DocumentBuilder			db			=	factory.newDocumentBuilder();
 								params.add(new BasicNameValuePair("autocommit","true"));
 								params.add(new BasicNameValuePair("token",dom.getElementsByTagName("token").item(0).getTextContent()));
 								httpPost	=	new HttpPost(this.wapiURL);
+								System.out.println("restapiDomainGetCredToken: 9 ");
 								httpPost.setEntity(new UrlEncodedFormEntity(params, org.apache.http.Consts.UTF_8));
+								System.out.println("restapiDomainGetCredToken: 10 ");
 								httpRes		=	HTTPSCLIENT.execute(httpPost,new BasicHttpContext());
+								System.out.println("restapiDomainGetCredToken: 11 ");
 			try{				dom			=	db.parse(httpRes.getEntity().getContent());
+			System.out.println("restapiDomainGetCredToken: 12 ");
 			}finally{			httpRes.close();
 			}					result		=	dom.getElementsByTagName("result");
 			if (result==null || result.item(0)==null || !result.item(0).getTextContent().equalsIgnoreCase("success"))
 				throw new WBXCONexception(getMethodName(2)+": [RESULT]:"+result.item(0).getTextContent()+" [ERROR}:"+documentGetErrorString(dom));
-				
+			System.out.println("restapiDomainGetCredToken: 13 ");
 								this.cred			=	dom.getElementsByTagName("cred").item(0).getTextContent();
+								System.out.println("restapiDomainGetCredToken: 14 ");
 								this.cred_generated	=	System.currentTimeMillis();
+								System.out.println("restapiDomainGetCredToken: 15 ");
 		} catch (final Exception e){
 			if (retry<3){
 				//Retry generating a new cred three times before giving up
@@ -340,7 +383,7 @@ final	DocumentBuilder			db			=	factory.newDocumentBuilder();
 				this.wapiURL	=	null;
 				System.err.println(getMethodName()+"("+retry+") for "+this.orgName+" unable to generate CRED token.");
 				e.printStackTrace();
-				System.exit(3);
+				//System.exit(3);
 			}
 		}
 	}
